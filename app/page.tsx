@@ -1,45 +1,24 @@
-import Image from "next/image";
 import Link from "next/link";
+import Header from "./components/Header";
+import Image from "next/image";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100">
       {/* Navbar */}
+      <Header />
       <header className="border-b border-slate-800/70 bg-slate-950/70 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
           <div className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/20 text-xs font-semibold text-blue-400">
-              KD
+              <Image src="/logo.png" alt="Logo" width={28} height={28} />
             </div>
-            <span className="text-sm font-semibold tracking-tight text-slate-100">
-              Kuda Dev Solutions
-            </span>
           </div>
-          <nav className="hidden gap-6 text-sm text-slate-300 md:flex">
-            <a href="#services" className="hover:text-slate-50">
-              Services
-            </a>
-            <a href="#projects" className="hover:text-slate-50">
-              Projects
-            </a>
-            <a href="#process" className="hover:text-slate-50">
-              Process
-            </a>
-            <a href="#contact" className="hover:text-slate-50">
-              Contact
-            </a>
-          </nav>
-          <Link
-            href="#contact"
-            className="rounded-full bg-blue-500 px-4 py-2 text-xs font-medium text-white shadow-sm hover:bg-blue-600"
-          >
-            Start a project
-          </Link>
         </div>
       </header>
 
       {/* Hero */}
-      <section className="border-b border-slate-800/70 bg-gradient-to-b from-slate-950 to-slate-900">
+      <section className="border-b border-slate-800/70 bg-linear-to-b from-slate-950 to-slate-900">
         <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-16 md:flex-row md:items-center md:py-24">
           <div className="flex-1">
             <p className="mb-3 inline-flex rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-blue-300">
@@ -47,7 +26,7 @@ export default function Home() {
             </p>
             <h1 className="text-balance text-4xl font-semibold tracking-tight text-slate-50 sm:text-5xl md:text-6xl">
               Build. Launch. Scale.
-              <span className="block text-transparent bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text">
+              <span className="block text-transparent bg-linear-to-r from-blue-400 to-cyan-300 bg-clip-text">
                 Your product, engineered to last.
               </span>
             </h1>
