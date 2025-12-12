@@ -6,6 +6,7 @@ import { ProjectsSection } from "./components/ProjectsSection";
 import { ProcessSection } from "./components/ProcessSection";
 import { ContactSection } from "./components/ContactSection";
 import { Footer } from "./components/Footer";
+import { FloatingCTA } from "@/components/ui/floating-cta";
 import { pageContent } from "./content/page-content";
 
 export default function Home() {
@@ -30,6 +31,17 @@ export default function Home() {
       <ProcessSection {...pageContent.process} />
       <ContactSection {...pageContent.contact} />
       <Footer {...pageContent.footer} />
+
+      {/* Floating Social CTA */}
+      <FloatingCTA
+        whatsapp="263718337704"
+        whatsappMessage="Hi! I'd like to discuss a project with you."
+        facebook="https://web.facebook.com/?_rdc=1&_rdrhttps://facebook.com/yourpage"
+        instagram="https://instagram.com/yourhandle"
+        linkedin=""
+        twitter=""
+        email="michaeljeranyama@gmail.com"
+      />
     </main>
   );
 }

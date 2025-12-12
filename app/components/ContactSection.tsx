@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, FormEvent } from "react";
 import { H2, H3, P, PSmall, PXSmall } from "@/components/ui/typography";
 
 interface Testimonial {
@@ -20,6 +23,44 @@ interface ContactProps {
 }
 
 export function ContactSection({ testimonials, contact }: ContactProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<
+    "idle" | "success" | "error"
+  >("idle");
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitStatus("idle");
+
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get("name"),
+      email: formData.get("email"),
+      message: formData.get("message"),
+    };
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (response.ok) {
+        setSubmitStatus("success");
+        (e.target as HTMLFormElement).reset();
+      } else {
+        setSubmitStatus("error");
+      }
+    } catch (error) {
+      setSubmitStatus("error");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   return (
     <section id="contact" className="border-b border-slate-800/70 bg-slate-950">
       <div className="mx-auto max-w-6xl px-4 py-16 md:py-20">
@@ -54,13 +95,27 @@ export function ContactSection({ testimonials, contact }: ContactProps) {
             <H3 className="mt-2">{contact.title}</H3>
             <PXSmall className="mt-2">{contact.description}</PXSmall>
 
-            <form className="mt-4 space-y-3">
+            {submitStatus === "success" && (
+              <div className="mt-4 rounded-lg bg-emerald-500/10 border border-emerald-500/30 px-3 py-2 text-sm text-emerald-300">
+                Message sent successfully! We'll get back to you soon.
+              </div>
+            )}
+
+            {submitStatus === "error" && (
+              <div className="mt-4 rounded-lg bg-red-500/10 border border-red-500/30 px-3 py-2 text-sm text-red-300">
+                Failed to send message. Please try again.
+              </div>
+            )}
+
+            <form onSubmit={handleSubmit} className="mt-4 space-y-3">
               <div>
                 <label className="text-xs font-medium text-slate-300">
                   Name
                 </label>
                 <input
                   type="text"
+                  name="name"
+                  required
                   className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-blue-500 focus:outline-none"
                   placeholder="Your name"
                 />
@@ -71,6 +126,8 @@ export function ContactSection({ testimonials, contact }: ContactProps) {
                 </label>
                 <input
                   type="email"
+                  name="email"
+                  required
                   className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-blue-500 focus:outline-none"
                   placeholder="you@example.com"
                 />
@@ -80,6 +137,8 @@ export function ContactSection({ testimonials, contact }: ContactProps) {
                   What are you looking to build?
                 </label>
                 <textarea
+                  name="message"
+                  required
                   className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-blue-500 focus:outline-none"
                   rows={4}
                   placeholder="Share a short description of your idea, timeline, and any links."
@@ -87,9 +146,10 @@ export function ContactSection({ testimonials, contact }: ContactProps) {
               </div>
               <button
                 type="submit"
-                className="mt-2 w-full rounded-full bg-blue-500 px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-white hover:bg-blue-600"
+                disabled={isSubmitting}
+                className="mt-2 w-full rounded-full bg-blue-500 px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-white hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Send message
+                {isSubmitting ? "Sending..." : "Send message"}
               </button>
             </form>
 

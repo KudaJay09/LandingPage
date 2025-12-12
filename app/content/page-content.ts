@@ -180,8 +180,8 @@ export const pageContent = {
   },
 
   footer: {
-    copyright: `© ${new Date().getFullYear()} Kuda Dev Solutions. All rights reserved.`,
+    copyright: `© ${new Date().getFullYear()} Devblog. All rights reserved.`,
     location: "Built from Zimbabwe, for global users.",
-    email: "info@yourdomain.com",
+    email: "michaeljeranyama@gmail.com",
   },
 };
