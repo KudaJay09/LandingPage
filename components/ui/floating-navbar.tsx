@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   motion,
   AnimatePresence,
@@ -22,6 +22,7 @@ export const FloatingNav = ({
   const { scrollYProgress } = useScroll();
 
   const [visible, setVisible] = useState(false);
+  const [activeSection, setActiveSection] = useState("");
 
   useMotionValueEvent(scrollYProgress, "change", (current) => {
     // Check if current is not undefined and is a number
@@ -39,6 +40,42 @@ export const FloatingNav = ({
       }
     }
   });
+
+  // Detect active section using Intersection Observer
+  useEffect(() => {
+    const observerOptions = {
+      root: null,
+      rootMargin: "-50% 0px -50% 0px", // Triggers when section is in the middle of viewport
+      threshold: 0,
+    };
+
+    const observerCallback = (entries: IntersectionObserverEntry[]) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute("id");
+          if (id) {
+            setActiveSection(`#${id}`);
+          }
+        }
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      observerCallback,
+      observerOptions
+    );
+
+    // Observe all sections
+    navItems.forEach((item) => {
+      const sectionId = item.link.replace("#", "");
+      const section = document.getElementById(sectionId);
+      if (section) {
+        observer.observe(section);
+      }
+    });
+
+    return () => observer.disconnect();
+  }, [navItems]);
 
   return (
     <AnimatePresence mode="wait">
@@ -64,11 +101,19 @@ export const FloatingNav = ({
             key={`link=${idx}`}
             href={navItem.link}
             className={cn(
-              "relative text-slate-300 items-center flex space-x-1 hover:text-slate-50"
+              "relative text-slate-300 items-center flex space-x-1 hover:text-slate-50 transition-colors",
+              activeSection === navItem.link && "text-blue-400"
             )}
           >
             <span className="block sm:hidden">{navItem.icon}</span>
             <span className="hidden sm:block text-sm">{navItem.name}</span>
+            {activeSection === navItem.link && (
+              <motion.span
+                layoutId="activeSection"
+                className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-1 w-1 bg-blue-400 rounded-full"
+                transition={{ type: "spring", stiffness: 380, damping: 30 }}
+              />
+            )}
           </a>
         ))}
         <a

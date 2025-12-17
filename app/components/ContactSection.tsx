@@ -1,7 +1,11 @@
 "use client";
 
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { H2, H3, P, PSmall, PXSmall } from "@/components/ui/typography";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface Testimonial {
   quote: string;
@@ -27,6 +31,43 @@ export function ContactSection({ testimonials, contact }: ContactProps) {
   const [submitStatus, setSubmitStatus] = useState<
     "idle" | "success" | "error"
   >("idle");
+
+  const sectionRef = useRef<HTMLElement>(null);
+  const testimonialsRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // Testimonials section animation
+      gsap.from(testimonialsRef.current?.children || [], {
+        opacity: 0,
+        x: -30,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
+          toggleActions: "play none none reset",
+        },
+      });
+
+      // Form animation
+      gsap.from(formRef.current, {
+        opacity: 0,
+        x: 30,
+        duration: 0.8,
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
+          toggleActions: "play none none reset",
+        },
+      });
+    }, sectionRef);
+
+    return () => ctx.revert();
+  }, []);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -62,11 +103,15 @@ export function ContactSection({ testimonials, contact }: ContactProps) {
     }
   };
   return (
-    <section id="contact" className="border-b border-slate-800/70 bg-slate-950">
+    <section
+      ref={sectionRef}
+      id="contact"
+      className="overflow-hidden border-b border-slate-800/70 bg-slate-950"
+    >
       <div className="mx-auto max-w-6xl px-4 py-16 md:py-20">
         <div className="grid gap-10 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
           {/* Testimonials */}
-          <div>
+          <div ref={testimonialsRef}>
             <H2>{testimonials.title}</H2>
             <P className="mt-2">{testimonials.description}</P>
 
@@ -88,7 +133,10 @@ export function ContactSection({ testimonials, contact }: ContactProps) {
           </div>
 
           {/* Contact Form */}
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5">
+          <div
+            ref={formRef}
+            className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5"
+          >
             <p className="text-xs font-semibold uppercase tracking-[0.2em] text-blue-300">
               {contact.badge}
             </p>
