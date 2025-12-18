@@ -15,7 +15,6 @@ export const FloatingNav = ({
   navItems: {
     name: string;
     link: string;
-    icon?: JSX.Element;
   }[];
   className?: string;
 }) => {
@@ -105,7 +104,6 @@ export const FloatingNav = ({
               activeSection === navItem.link && "text-blue-400"
             )}
           >
-            <span className="block sm:hidden">{navItem.icon}</span>
             <span className="hidden sm:block text-sm">{navItem.name}</span>
             {activeSection === navItem.link && (
               <motion.span
